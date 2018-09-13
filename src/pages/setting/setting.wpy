@@ -1,0 +1,18 @@
+<style type="scss">
+
+</style>
+<template>
+    <view class="container">
+
+    </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+
+  export default class account extends wepy.page {
+    barec = null
+    data = {}
+  }
+</script>

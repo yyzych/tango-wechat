@@ -1,0 +1,56 @@
+<style lang='scss'>
+    @import "./styles/base.scss";
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+
+  export default class app extends wepy.app {
+    globalData = {
+      baseUrl: 'http://114.55.0.119:3000/mock/21'
+    };
+    config = {
+      pages: [
+        'pages/home/home',
+        'pages/setting/setting'
+      ],
+      window: {
+        backgroundTextStyle: 'dark',
+        navigationBarTitleText: 'TANGO',
+        navigationBarBackgroundColor: '#2a5f75',
+        navigationBarTextStyle: 'white'
+      },
+      tabBar: {
+        color: '#cccccc',
+        selectedColor: '#2a5f75',
+        backgroundColor: '#ffffff',
+        borderStyle: 'white',
+        list: [
+          {
+            pagePath: 'pages/home/home',
+            text: '首页',
+            iconPath: 'images/tabbar/home-gray.png',
+            selectedIconPath: 'images/tabbar/home-blue.png'
+          },
+          {
+            pagePath: 'pages/setting/setting',
+            text: '设置',
+            iconPath: 'images/tabbar/setting-gray.png',
+            selectedIconPath: 'images/tabbar/setting-blue.png'
+          }
+        ]
+      }
+    }
+    constructor () {
+      super();
+      // 注册中间件
+      this.use('requestfix'); // 用于修复小程序并发问题
+      this.use('promisify'); // promise化请求
+    }
+
+    onLaunch () {
+      // WxUtils.wxHideShareMenu()
+    }
+  }
+</script>
