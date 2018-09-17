@@ -13,11 +13,17 @@
     config = {
       pages: [
         'pages/home/home',
-        'pages/setting/setting'
+        'pages/setting/setting',
+        'pages/setting/advice',
+        'pages/setting/about',
+        'pages/book/index',
+        'pages/book/unit',
+        'pages/search/index',
+        'pages/word/index'
       ],
       window: {
         backgroundTextStyle: 'dark',
-        navigationBarTitleText: 'TANGO',
+        navigationBarTitleText: '単語',
         navigationBarBackgroundColor: '#2a5f75',
         navigationBarTextStyle: 'white'
       },
@@ -35,7 +41,7 @@
           },
           {
             pagePath: 'pages/setting/setting',
-            text: '设置',
+            text: '我的',
             iconPath: 'images/tabbar/setting-gray.png',
             selectedIconPath: 'images/tabbar/setting-blue.png'
           }

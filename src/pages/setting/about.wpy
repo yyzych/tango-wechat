@@ -1,0 +1,46 @@
+<style lang="scss">
+  .page-about {
+    text-align: center;
+    line-height: 1.6;
+    padding: 0 40rpx;
+    color: #333;
+
+    .name {
+      font-size: 36rpx;
+      margin: 40rpx 0 0;
+    }
+    .version {
+      font-size: 32rpx;
+      margin: 0 0 20rpx;
+    }
+    .thanks {
+      color: #999;
+      // text-indent: 2em;
+    }
+  }
+</style>
+<template>
+    <view class="page-about">
+      <view class="name">单语小程序</view>
+    	<view class="version">V1.0.0</view>
+      <view class="thanks">
+        非常感谢单语APP提供的灵感，在日语背诵单词的过程中提供了很多的帮助，并且小程序的开发也参考了它的设计。由于单语APP上缺少《大家的日语初级2》等资源，并且也想要做一款更适合自己使用日语软件，所以决心开发了这款小程序。程序在不断完善中，有什么意见可以反馈，希望在日语学习的过程中能给大家提供一点帮助。
+      </view>
+    </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+
+  export default class About extends wepy.page {
+  	data = {
+
+  	}
+
+  	methods = {
+      
+    }
+  }
+</script>

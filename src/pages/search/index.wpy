@@ -1,0 +1,104 @@
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .search {
+        padding: 20rpx 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &__placeholder {
+            color: $lighterColor;
+            font-size: 32rpx;
+        }
+        &__wrapper {
+            flex-grow: 1;
+            padding-left: 30rpx;
+        }
+        &__cancel {
+            flex-grow: 0;
+            // width: 90rpx;
+            padding: 0 30rpx;
+            font-size: 32rpx;
+            text-align: right;
+        }
+        &__input {
+            position:relative;
+            height:80rpx;
+            line-height:80rpx;
+            background:$borderColor;
+            border-radius:40rpx;
+            padding:0 30rpx;
+        }
+    }
+    .completion {
+        padding:16rpx;
+        text-align:center;
+        font-size:24rpx;
+    }
+</style>
+<template>
+    <view>
+    	<view class="search">
+            <view class="search__wrapper">
+                <input 
+                    focus="true"
+                    confirm-type="search"
+                    class="search__input" 
+                    type="text" 
+                    placeholder-class="search__placeholder"
+                    placeholder="假名/汉字/意思">
+            </view>
+            <view class="search__cancel color-primary">取消</view>
+        </view>
+        <view class="list list--word">
+            <view class="list-item list-item--word">
+                <view class="left">
+                    <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
+                </view>
+                <view class="middle">
+                    <view class="list-item__title">第1课</view>
+                    <view class="list-item__subtitle">共21词</view>
+                </view>
+                <view class="right">
+                    <text class="list-item--word__type">[代词]</text>
+                    <text class="list-item--word__explantion">学生</text>
+                </view>
+            </view>
+            <view class="list-item list-item--word">
+                <view class="left">
+                    <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
+                </view>
+                <view class="middle">
+                    <view class="list-item__title">第1课</view>
+                </view>
+                <view class="right">
+                    <text class="list-item--word__type">[代词]</text>
+                    <text class="list-item--word__explantion">学生</text>
+                </view>
+            </view>
+        </view>
+        <view class="completion">
+            <view class="search-online color-primary">在线搜索</view>
+        </view>
+    </view>
+</template>
+
+
+<script>
+    import wepy from 'wepy'
+
+    export default class SearchIndex extends wepy.page {
+        data = {
+
+        }
+
+        methods = {
+        	
+        }
+
+        onReady () {
+
+        }
+    }
+</script>

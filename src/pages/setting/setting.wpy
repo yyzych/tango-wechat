@@ -1,18 +1,98 @@
-<style type="scss">
+<style lang="scss">
+	page {
+		background:#f9f9f9;
+	}
+	.profile {
+		margin: 40rpx 40rpx 60rpx;
+		overflow: hidden;
 
+		&__detail {
+			overflow: hidden;
+		}
+		&__name {
+			font-size:38rpx;
+			margin:24rpx 0 10rpx;
+		}
+		&__rank {
+			color:#999;
+		}
+		&__avatar {
+			float: left;
+			margin-right: 40rpx;
+			
+			image {
+				width: 150rpx;
+				height: 150rpx;
+				border-radius: 50%;
+			}
+		}
+	}
 </style>
 <template>
-    <view class="container">
-
+    <view>
+    	<view class="profile">
+    		<view class="profile__avatar">
+	    		<image src="/images/avatar.jpg"></image>
+    		</view>
+    		<view class="profile__detail">
+    			<view class="profile__name">叶喽喽</view>
+    			<view class="profile__rank">部分权限<!-- /会员权限/至尊权限 --></view>
+    		</view>
+    	</view>
+    	<view class="list" style="margin-bottom: 20rpx;">
+    		<view class="list-item">
+    			<view class="list-item__key">每日学习提醒</view>
+    			<view class="list-item__value">
+    				<picker mode="date" fields="month">
+		                <!-- <text>每天 18:00</text> -->
+		                <text>设置</text>
+		            </picker>
+    			</view>
+    		</view>
+    	</view>
+    	<view class="list">
+    		<view class="list-item" @tap="handleNavigateToAbout">
+    			<view class="list-item__key">关于我们</view>
+    			<image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+    		</view>
+    		<view class="list-item" @tap="handleNavigateToAdvice">
+    			<view class="list-item__key">意见反馈</view>
+    			<image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+    		</view>
+    		<view class="list-item">
+    			<view class="list-item__key">社区QQ群</view>
+    			<view class="list-item__value"  @tap="handleJoinQQ">点击复制</view>
+    		</view>
+    	</view>
     </view>
 </template>
 
 
 <script>
   import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
 
-  export default class account extends wepy.page {
-    barec = null
-    data = {}
+  export default class Setting extends wepy.page {
+  	data = {
+
+  	}
+
+  	methods = {
+  		handleJoinQQ() {
+  			wx.setClipboardData({
+  				data: '932241741'
+  			})
+  		},
+      handleNavigateToAdvice() {
+        wx.navigateTo({
+          url: '/pages/setting/advice'
+        })
+      },
+      handleNavigateToAbout() {
+        wx.navigateTo({
+          url: '/pages/setting/about'
+        })
+      }
+  	}
   }
 </script>

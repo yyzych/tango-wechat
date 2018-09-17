@@ -1,9 +1,180 @@
-<style type="scss">
+<style lang="scss">
+	@import "../../styles/variable";
 
+	.search {
+		padding: 20rpx 30rpx;
+		&__inner {
+			position:relative;
+			height:80rpx;
+			line-height:80rpx;
+			background:$borderColor;
+			border-radius:40rpx;
+			// box-shadow:0 0 10px #afafaf;
+			border: 1px solid $borderColor;
+			padding:0 30rpx;
+		}
+		&__placeholder {
+			color: $lighterColor;
+			font-size:32rpx;
+		}
+		&__icon {
+			width: 50rpx;
+			height: 50rpx;
+			position: absolute;
+			right: 30rpx;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+	}
+	.topping {
+		padding: 20rpx 60rpx;
+		overflow: hidden;
+
+		&__cover {
+			width: 168rpx;
+			height: 232rpx;
+			margin-right: 30rpx;
+			float: left;
+		}
+		&__profile {
+			overflow: hidden;
+		}
+		&__name {
+			font-size: 32rpx;
+			margin-top: 10rpx
+		}
+		&__word-count {
+			color: $lighterColor;
+			font-size: 24rpx;
+		}
+		&__studying {
+			display: inline-block;
+			margin-top: 20rpx;
+			color: $highlightColor;
+		}
+		&__description {
+			color: $lighterColor;
+			font-size: 24rpx;
+		}
+	}
+	.section-hint {
+		margin-bottom: 30rpx;
+		margin-right: 50rpx;
+		margin-left: 50rpx;
+		margin-top: 30rpx;
+		padding-bottom: 20rpx;
+		border-bottom: 1px solid $borderColor;
+		color: $lighterColor;
+		text-align: right;
+	}
+	.books {
+		padding: 0 30rpx;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+	}
+	.book {
+		overflow: hidden;
+		text-align: center;
+		padding: 20rpx;
+		box-sizing:border-box;
+		width: 33.3333%;
+
+		&--studying {
+
+		}
+		&__cover {
+			width: 168rpx;
+			height: 232rpx;
+		}
+		&__profile {
+			
+		}
+		&__name {
+			font-size: 26rpx;
+		}
+		&__word-count {
+			color: $lightColor;
+			font-size: 24rpx;
+		}
+	}
 </style>
 <template>
     <view>
-
+    	<view class="search">
+    		<view class="search__inner" @tap="handleTapNavigateToSearch">
+	    		<text class="search__placeholder">假名/汉字/意思</text>
+	    		<image class="search__icon" src="../../images/icons/search.png"></image>
+    		</view>
+    	</view>
+    	<view class="section-hint">
+    		正在学
+    	</view>
+    	<view class="topping">
+    		<image class="topping__cover" height="100" width="100" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    		<view class="topping__profile">
+    			<view @tap="handleTapNavigateToBook">
+	    			<view class="topping__name">标准日语中级上</view>
+	    			<view class="topping__word-count">
+	    				<text>共24个单元</text>
+	    				<text style="margin-left: 20rpx">807个单词</text>
+	    			</view>
+	    			<view class="topping__description">
+	    				大家的日语》讲述教材沿用《新日语基础教程1、2》的教学方式。
+	    			</view>
+    			</view>
+    			<view class="topping__studying" @tap="handleTapNavigateToUnit">
+    				继续学习 第3课
+    			</view>
+    		</view>
+    	</view>
+    	<view class="section-hint">
+    		更多
+    	</view>
+    	<view class="books">
+    		<view class="book">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    		<view class="book">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    		<view class="book book--studying">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    		<view class="book">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    		<view class="book">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    		<view class="book">
+    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    			<view class="book__profile">
+    				<view class="book__name">标准日语中级上</view>
+    				<view class="book__word-count">单词数：807</view>
+    			</view>
+    		</view>
+    	</view>
     </view>
 </template>
 
@@ -11,8 +182,31 @@
 <script>
     import wepy from 'wepy'
 
-    export default class account extends wepy.page {
-        barec = null
-        data = {}
+    export default class Home extends wepy.page {
+        data = {
+
+        }
+
+        methods = {
+        	handleTapNavigateToBook(e) {
+        		wx.navigateTo({
+        			url: '/pages/book/index'
+        		})
+        	},
+        	handleTapNavigateToSearch(e) {
+	        	wx.navigateTo({
+	        		url: '/pages/search/index'
+	        	})	
+        	},
+        	handleTapNavigateToUnit(e) {
+        		wx.navigateTo({
+        			url: '/pages/book/unit'
+        		})
+        	}
+        }
+
+        onReady () {
+
+        }
     }
 </script>

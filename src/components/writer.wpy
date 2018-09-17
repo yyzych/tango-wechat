@@ -1,0 +1,150 @@
+<style lang="scss">
+    @import "../styles/variable";
+    .writer {
+        &__trigger {
+            position:fixed;
+            right: 40rpx;
+            bottom: 80rpx;
+            z-index: 999;
+        }
+
+        &__operation {
+            border-radius:50%;
+            box-shadow:0 0 10px #efefef;
+            background:#fff;
+            width:100rpx;
+            height:100rpx;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border:1px solid #efefef;
+
+            &--clear {
+                margin-bottom: 14rpx;
+            }
+
+            cover-image,
+            image {
+                width:50rpx;
+                height:50rpx;
+            }
+        }
+        &__canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height:100%;
+            width:100%;
+            background:rgba(255, 255, 255, 0.6);
+            z-index: 8;
+        }
+    }
+</style>
+<template>
+    <view class="writer">
+        <view class="writer__trigger">
+            <view wx:if="{{!openCanvas}}" class="writer__operation" @tap="handleOpenCanvas">
+                <image src="/images/icons/pan.png"></image>
+            </view>
+        </view>
+        <canvas 
+            class="writer__canvas" 
+            wx:if="{{openCanvas}}"
+            disable-scroll="false" 
+            bindtouchstart="uploadScaleStart" 
+            bindtouchmove="uploadScaleMove" 
+            bindtouchend="uploadScaleEnd" 
+            bindtap="mouseDown" 
+            canvas-id="{{id}}">
+            <cover-view class="writer__trigger">
+                <cover-view class="writer__operation writer__operation--clear" @tap="handleClearCanvas">
+                    <cover-image src="/images/icons/clear.png"></cover-image>
+                </cover-view>
+                <cover-view class="writer__operation" @tap="handleCloseCanvas">
+                    <cover-image src="/images/icons/x.png"></cover-image>
+                </cover-view>
+            </cover-view>
+        </canvas>
+    </view>
+</template>
+
+
+<script>
+    import wepy from 'wepy'
+
+    export default class Writer extends wepy.page {
+        data = {
+            id: 'writer',
+            openCanvas: false,
+            ctx: null,
+            lastLoc: { x: 0, y: 0 },
+            isOnMoveDown: false,
+            lastTimestamp: 0
+        }
+
+        methods = {
+        	handleOpenCanvas (e) {
+                this.openCanvas = true
+            },
+            handleCloseCanvas (e) {
+                this.openCanvas = false
+            },
+            handleClearCanvas (e) {
+                this.ctx.clearRect(0, 0, 700, 730)
+                this.ctx.draw()
+            },
+            mouseDown () {
+                this.isOnMoveDown = true
+            },
+            uploadScaleStart(e) {
+              let [touch0, touch1] = e.touches
+              var curLoc = {
+                x: touch0.x,
+                y: touch0.y
+              }
+
+              this.lastLoc = curLoc
+              this.lastTimestamp = new Date().getTime()
+              this.isOnMoveDown = true
+            },
+            uploadScaleMove(e) {
+              let [touch0, touch1] = e.changedTouches
+              var isOnMoveDown = this.isOnMoveDown
+              if (isOnMoveDown) {
+                var ctx = this.ctx
+
+                var curLoc = touch0
+                var lastLoc = this.lastLoc
+                var currTimestamp = new Date().getTime()
+                var s = this.calcDistance(curLoc, lastLoc)
+                var t = currTimestamp - this.lastTimestamp
+                var lineWidth = 5
+                ctx.beginPath()
+                ctx.moveTo(lastLoc.x, lastLoc.y)
+                ctx.lineTo(curLoc.x, curLoc.y)
+                ctx.setStrokeStyle('black')
+                ctx.setLineCap('round')
+                ctx.setLineJoin('round')
+                ctx.setLineWidth(lineWidth)
+
+                ctx.stroke()
+                ctx.draw(true)
+
+                this.lastLoc = curLoc
+                this.lastTimestamp = currTimestamp
+              }
+            },
+            uploadScaleEnd: function () {
+                this.lastTimestamp = new Date().getTime()
+            },
+        }
+
+        calcDistance (loc1, loc2) {
+          return Math.sqrt((loc1.x - loc2.y) * (loc1.x - loc2.y) + (loc1.y - loc2.y) * (loc1.y - loc2.y))
+        }
+
+        init () {
+            this.ctx = wx.createCanvasContext(this.id)
+        }
+    }
+</script>

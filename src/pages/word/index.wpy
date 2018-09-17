@@ -1,0 +1,141 @@
+<style lang="scss">
+    @import "../../styles/variable";
+    .word {
+        text-align: center;
+        line-height: 1.6;
+        color:#333;
+
+        &__kana {
+            font-size:66rpx;
+            margin: 20rpx 0 0;
+            margin-top: 40rpx;
+        }
+        &__kanji {
+            font-size:50rpx;
+            margin: 10rpx 0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        &__type {
+            font-size: 36rpx;
+            padding-right: 10rpx;
+        }
+        &__tone {
+            font-size: 36rpx;
+            padding-left: 10rpx;
+        }
+        &__explantion {
+            font-size: 60rpx;
+            margin:40rpx 0;
+        }
+        &__from {
+            position: fixed;
+            bottom: 110rpx;
+            left: 50%;
+            font-size: 32rpx;
+            transform: translateX(-50%);
+        }
+    }
+    .prounce {
+        display: inline-block;
+        &__icon {
+            height:60rpx;
+            width:60rpx;
+            margin-bottom:-7rpx;
+        }
+    }
+    .report {
+        position: fixed;
+        bottom: 50rpx;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24rpx;
+        color: $lightColor;
+    }
+    .progress {
+        text-align:center;
+        background:#f9f9f9;
+        padding:10rpx 0;
+        color:#666;
+        font-size:24rpx;
+    }
+    .arrow {
+        height: 80rpx;
+        width: 80rpx;
+    }
+    .prev {
+        position: fixed;
+        left: 10rpx;
+        top: 45%;
+        transform: translateY(-50%);
+    }
+    .next {
+        position: fixed;
+        right: 10rpx;
+        top: 45%;
+        transform: translateY(-50%);
+    }
+</style>
+<template>
+    <view>
+        <view class="progress">
+            4/807
+        </view>
+    	<view class="word">
+            <view class="word__kana">
+                <text>わたし</text>
+                <view class="prounce">
+                    <image class="prounce__icon" src="../../images/icons/prounce-audio.png"></image>
+                </view>
+            </view>   
+            <view class="word__kanji">
+                <text class="word__type">[名词]</text>
+                <text>私</text>
+                <text class="word__tone">⑥</text>
+            </view>
+            <view class="word__explantion">我们</view>
+            <view class="word__from">来自大家的日语</view>
+        </view>
+        <view class="prev">
+            <image class="arrow" src="../../images/icons/arrow-left.png"></image>
+        </view>
+        <view class="next">
+            <image class="arrow" src="../../images/icons/arrow-right.png"></image>
+        </view>
+        <view class="report">
+            报告问题单词
+        </view>
+        <writer id="wordWriter"></writer>
+    </view>
+</template>
+
+
+<script>
+    // ①②③④⑤⑥⑦⑧⑨⑩
+    import wepy from 'wepy'
+    import Writer from '../../components/writer'
+
+    export default class WordIndex extends wepy.page {
+        components = {
+            writer: Writer
+        }
+
+        config = {
+            enablePullDownRefresh: false,
+            disableScroll: true
+        }
+
+        data = {
+
+        }
+
+        methods = {
+        	
+        }
+
+        onReady () {
+            this.$invoke('writer', 'init')
+        }
+    }
+</script>

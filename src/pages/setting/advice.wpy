@@ -1,0 +1,42 @@
+<style lang="scss">
+  textarea {
+    padding: 30rpx;
+    width:100%;
+    height:300rpx;
+    border-bottom:1px solid #efefef;
+  }
+  .textarea-placeholder {
+    color: #999;
+  }
+  button {
+    margin:30rpx;
+  }
+</style>
+<template>
+    <view>
+    	<form class="form" bindsubmit="bindFormSubmit" maxlength="140">
+          <textarea placeholder="功能建议/使用问题/广告合作/等，140字以内" focus="true" auto-focus="true" show-confirm-bar="{{false}}" placeholder-class="textarea-placeholder" name="textarea"/>
+          <button form-type="submit" type="primary">提交</button>
+        </form>
+    </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+
+  // bug: show-confirm-bar={{false}}
+
+  export default class Advice extends wepy.page {
+  	data = {
+
+  	}
+
+  	methods = {
+      bindFormSubmit(e) {
+        console.log(e.detail.value.textarea)
+      }
+    }
+  }
+</script>

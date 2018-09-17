@@ -1,0 +1,91 @@
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .topping {
+        padding: 40rpx 60rpx;
+        overflow: hidden;
+
+        &__cover {
+            width: 126rpx;
+            height: 174rpx;
+            margin-right: 30rpx;
+            float: left;
+        }
+        &__profile {
+            overflow: hidden;
+        }
+        &__name {
+            font-size: 32rpx;
+            margin-top: 10rpx
+        }
+        &__word-count {
+            color: $lighterColor;
+            font-size: 24rpx;
+        }
+        &__description {
+            color: $lighterColor;
+            font-size: 24rpx;
+        }
+    }
+</style>
+
+<template>
+    <view>
+    	<view class="topping">
+            <image class="topping__cover" height="100" width="100" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+            <view class="topping__profile">
+                <view class="topping__name">标准日语中级上
+                    <!-- <view class="color-success" style="float: right;">置顶</view> -->
+                    <view class="color-danger" style="float: right;">取消置顶</view>
+                </view>
+                <view class="topping__word-count">
+                    <text>共24个单元</text>
+                    <text style="margin-left: 20rpx">807个单词</text>
+                </view>
+                <view class="topping__description">
+                    大家的日语》讲述教材沿用《新日语基础教程1、2》的教学方式。
+                </view>
+            </view>
+        </view>
+        <view class="list">
+            <view class="list-item" @tap="handleTapNavigateToUnit">
+                <view class="list-item__title">第1课</view>
+                <view class="list-item__subtitle">共21词</view>
+                <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+            </view>
+            <view class="list-item">
+                <view class="list-item__title">第2课</view>
+                <view class="list-item__subtitle">共21词</view>
+                <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+            </view>
+            <view class="list-item">
+                <view class="list-item__title">第3课</view>
+                <view class="list-item__subtitle">共21词</view>
+                <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+            </view>
+        </view>
+    </view>
+</template>
+
+
+<script>
+    import wepy from 'wepy'
+
+    export default class BookIndex extends wepy.page {
+        data = {
+
+        }
+
+        methods = {
+        	handleTapNavigateToUnit(e) {
+                wx.navigateTo({
+                    url: '/pages/book/unit'
+                })
+            }
+        }
+
+        onReady () {
+
+        }
+    }
+</script>
