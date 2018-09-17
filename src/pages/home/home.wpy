@@ -97,6 +97,12 @@
 			color: $lightColor;
 			font-size: 24rpx;
 		}
+
+		&--limit {
+			.book__cover {
+				filter:grayscale(100);
+			}
+		}
 	}
 </style>
 <template>
@@ -160,7 +166,7 @@
     				<view class="book__word-count">单词数：807</view>
     			</view>
     		</view>
-    		<view class="book">
+    		<view class="book book--limit">
     			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
     			<view class="book__profile">
     				<view class="book__name">标准日语中级上</view>

@@ -8,7 +8,7 @@
 
   export default class app extends wepy.app {
     globalData = {
-      baseUrl: 'http://114.55.0.119:3000/mock/21'
+      baseUrl: 'http://localhost:8080/v1'
     };
     config = {
       pages: [

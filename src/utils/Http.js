@@ -1,11 +1,8 @@
 import wepy from 'wepy'
-import Tips from './Tips';
-
-const app = getApp();
 
 // HTTP工具类
 export default class http {
-  static async request(method, url, data, tip = false) {
+  static async request(method, url, data) {
     const param = {
       url: url,
       method: method,
@@ -13,75 +10,34 @@ export default class http {
       header: {
         'content-type': 'application/x-www-form-urlencoded'
       }
-    };
-    const res = await wepy.request(param);
-    if (this.isSuccess(res)) {
-      let value = res.data
-      if (value.success) {
-        return value
-      } else {
-        if (value.data && (value.data.code === -1 || value.data.code === 0)) {
-          wx.reLaunch({url: '/pages/login/login'})
-          return {success: false}
-        } else {
-          if (tip) {
-            Tips.toast(value.message, 1000)
-          }
-          return value
-        }
-      }
+    }
+    const res = await wepy.request(param)
+    if (res.statusCode !== 0) {
+      res.data.success = res.data.code === 0
+      return res.data
     } else {
-      console.error(method, url, data, res);
-      throw this.requestException(res);
+      console.error(method, url, data, res)
+      throw res
     }
   }
 
-  /**
-   * 判断请求是否成功
-   */
-  static isSuccess(res) {
-    const wxCode = res.statusCode;
-    // 微信请求错误
-    if (wxCode !== 200) {
-      return false;
-    }
-    const wxData = res.data;
-    return wxData;
+  static get(url, data) {
+    return this.request('GET', url, data)
   }
 
-  /**
-   * 异常
-   */
-  static requestException(res) {
-    const error = {};
-    error.statusCode = res.statusCode;
-    const wxData = res.data;
-    const serverData = wxData.data;
-    if (serverData) {
-      error.serverCode = wxData.code;
-      error.message = serverData.message;
-      error.serverData = serverData;
-    }
-    return error;
+  static put(url, data) {
+    return this.request('PUT', url, data)
   }
 
-  static get(url, data, tip) {
-    return this.request('GET', url, data, tip)
+  static post(url, data) {
+    return this.request('POST', url, data)
   }
 
-  static put(url, data, tip) {
-    return this.request('PUT', url, data, tip)
+  static patch(url, data) {
+    return this.request('PATCH', url, data)
   }
 
-  static post(url, data, tip) {
-    return this.request('POST', url, data, tip)
-  }
-
-  static patch(url, data, tip) {
-    return this.request('PATCH', url, data, tip)
-  }
-
-  static delete(url, data, tip) {
-    return this.request('DELETE', url, data, tip)
+  static delete(url, data) {
+    return this.request('DELETE', url, data)
   }
 }
