@@ -1,29 +1,32 @@
 export default class Cache {
-  static cache = new Map();
-  static _debug = false;
-  /**
-   * 删除缓存对象
-   */
-  static remove(key) {
-    if (key == null) {
-      return;
-    }
-    this.cache.delete(key);
+  static getReadingBook() {
+    return wx.getStorageSync('readingBook')
   }
 
-  /**
-   * 设置缓存
-   */
-  static set(key, value) {
-    if (key == null) {
-      return;
-    }
-    value._lastupdate = new Date().getTime();
-    this.cache.set(key, value);
+  static removeReadingBook() {
+    return wx.removeStorageSync('readingBook')
   }
-  static log(text) {
-    if (this._debug) {
-      console.info(text);
+
+  static setReadingBook(data, option = {merge: true}) {
+    if (!option.merge) {
+      wx.setStorageSync('readingBook', data)
+      return data
     }
+    let book = this.getReadingBook()
+    if (!book) {
+      wx.setStorageSync('readingBook', data)
+      return data
+    }
+    for (var prop in data) {
+      book[prop] = data[prop]
+    }
+    wx.setStorageSync('readingBook', book)
+    return book
+  }
+
+  static setReadingUnit(data) {
+    return this.setReadingBook({
+      readingUnit: data
+    })
   }
 }

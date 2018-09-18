@@ -1,8 +1,9 @@
-import base from './base';
+import base from './base'
+import http from '../utils/Http'
 
 export default class user extends base {
   static async authorize (data) {
     const url = `${this.baseUrl}/user/authorize`
-    return await this.post(url, data)
+    return await http.post(url, data)
   }
 }

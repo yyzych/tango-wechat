@@ -41,7 +41,8 @@
 		}
 		&__name {
 			font-size: 32rpx;
-			margin-top: 10rpx
+			margin-top: 10rpx;
+			margin-bottom:6rpx;
 		}
 		&__word-count {
 			color: $lighterColor;
@@ -92,6 +93,9 @@
 		}
 		&__name {
 			font-size: 26rpx;
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
 		}
 		&__word-count {
 			color: $lightColor;
@@ -108,29 +112,29 @@
 <template>
     <view>
     	<view class="search">
-    		<view class="search__inner" @tap="handleTapNavigateToSearch">
+    		<view class="search__inner" @tap="handleNavigateToSearch">
 	    		<text class="search__placeholder">假名/汉字/意思</text>
 	    		<image class="search__icon" src="../../images/icons/search.png"></image>
     		</view>
     	</view>
-    	<view class="section-hint">
+    	<view class="section-hint" wx:if="{{readingBook != null}}">
     		正在学
     	</view>
-    	<view class="topping">
-    		<image class="topping__cover" height="100" width="100" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    	<view class="topping" wx:if="{{readingBook != null}}">
+    		<image class="topping__cover" height="100" width="100" src="{{readingBook.imageUrl}}"></image>
     		<view class="topping__profile">
-    			<view @tap="handleTapNavigateToBook">
-	    			<view class="topping__name">标准日语中级上</view>
+    			<view @tap="handleNavigateToBook({{readingBook}})">
+	    			<view class="topping__name">{{readingBook.name}}</view>
 	    			<view class="topping__word-count">
-	    				<text>共24个单元</text>
-	    				<text style="margin-left: 20rpx">807个单词</text>
+	    				<text>共{{readingBook.unitCount}}个单元</text>
+	    				<text style="margin-left: 20rpx">{{readingBook.wordCount}}个单词</text>
 	    			</view>
 	    			<view class="topping__description">
-	    				大家的日语》讲述教材沿用《新日语基础教程1、2》的教学方式。
+	    				{{readingBook.description}}
 	    			</view>
     			</view>
-    			<view class="topping__studying" @tap="handleTapNavigateToUnit">
-    				继续学习 第3课
+    			<view class="topping__studying" @tap="handleNavigateToUnit({{readingBook.readingUnit}})">
+    				继续学习 {{readingBook.readingUnit.name}}
     			</view>
     		</view>
     	</view>
@@ -138,46 +142,11 @@
     		更多
     	</view>
     	<view class="books">
-    		<view class="book">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+    		<view class="book" wx:for="{{bookList}}" wx:key="id" @tap="handleNavigateToBook({{item}})">
+    			<image class="book__cover" src="{{item.imageUrl}}"></image>
     			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
-    			</view>
-    		</view>
-    		<view class="book">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
-    			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
-    			</view>
-    		</view>
-    		<view class="book book--studying">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
-    			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
-    			</view>
-    		</view>
-    		<view class="book">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
-    			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
-    			</view>
-    		</view>
-    		<view class="book book--limit">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
-    			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
-    			</view>
-    		</view>
-    		<view class="book">
-    			<image class="book__cover" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
-    			<view class="book__profile">
-    				<view class="book__name">标准日语中级上</view>
-    				<view class="book__word-count">单词数：807</view>
+    				<view class="book__name">{{item.name}}</view>
+    				<view class="book__word-count">单词数：{{item.wordCount}}</view>
     			</view>
     		</view>
     	</view>
@@ -187,32 +156,61 @@
 
 <script>
     import wepy from 'wepy'
+    import bookApi from '../../apis/book'
+    import Tips from '../../utils/Tips'
+    import Cache from '../../utils/Cache'
 
     export default class Home extends wepy.page {
         data = {
-
+        	readingBook: null,
+        	bookList: []
         }
 
         methods = {
-        	handleTapNavigateToBook(e) {
-        		wx.navigateTo({
-        			url: '/pages/book/index'
-        		})
-        	},
-        	handleTapNavigateToSearch(e) {
+        	handleNavigateToSearch(e) {
 	        	wx.navigateTo({
 	        		url: '/pages/search/index'
 	        	})	
         	},
-        	handleTapNavigateToUnit(e) {
+        	handleNavigateToUnit(unit) {
         		wx.navigateTo({
-        			url: '/pages/book/unit'
+        			url: `/pages/book/unit?unitId=${unit.id}`
+        		})
+        	},
+        	handleNavigateToBook(book) {
+        		wx.navigateTo({
+        			url: `/pages/book/index?bookId=${book.id}`
         		})
         	}
         }
 
-        onReady () {
+        async loadData () {
+        	let { resourceUrl } = this.$parent.globalData
 
+        	let promsie = bookApi.getAll()
+        	let resp = await promsie
+        	if (!resp.success) {
+        		Tips.error(resp.message)
+        		return
+        	}
+        	this.bookList = resp.data.map(book => {
+        		book.imageUrl = `${resourceUrl}${book.imageUrl}`
+        		return book
+        	})
+        	this.$apply()
+        }
+
+        onShow() {
+        	let readingBook = Cache.getReadingBook()
+        	if (readingBook) {
+        	    this.readingBook = readingBook
+        	} else {
+        		this.readingBook = null
+        	}
+        }
+
+        onLoad () {
+        	this.loadData()
         }
     }
 </script>

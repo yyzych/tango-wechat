@@ -1,8 +1,9 @@
-import base from './base';
+import base from './base'
+import http from '../utils/Http'
 
 export default class unit extends base {
   static async get (data) {
     const url = `${this.baseUrl}/unit`
-    return await this.get(url, data)
+    return await http.get(url, data)
   }
 }

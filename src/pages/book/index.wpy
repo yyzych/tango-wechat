@@ -16,7 +16,8 @@
         }
         &__name {
             font-size: 32rpx;
-            margin-top: 10rpx
+            margin-top: 10rpx;
+            margin-bottom:6rpx;
         }
         &__word-count {
             color: $lighterColor;
@@ -32,35 +33,25 @@
 <template>
     <view>
     	<view class="topping">
-            <image class="topping__cover" height="100" width="100" src="http://192.168.60.156:8080/assets/images/books/biaorizhongjishang.jpg"></image>
+            <image class="topping__cover" height="100" width="100" src="{{book.imageUrl}}"></image>
             <view class="topping__profile">
-                <view class="topping__name">标准日语中级上
-                    <!-- <view class="color-success" style="float: right;">置顶</view> -->
-                    <view class="color-danger" style="float: right;">取消置顶</view>
+                <view class="topping__name">{{book.name}}
+                    <view @tap="handleToggleTopping" wx:if="{{!isTopping}}" class="color-success" style="float: right;">置顶</view>
+                    <view @tap="handleToggleTopping" wx:else class="color-danger" style="float: right;">取消置顶</view>
                 </view>
                 <view class="topping__word-count">
-                    <text>共24个单元</text>
-                    <text style="margin-left: 20rpx">807个单词</text>
+                    <text>共{{book.unitCount}}个单元</text>
+                    <text style="margin-left: 20rpx">{{book.wordCount}}个单词</text>
                 </view>
                 <view class="topping__description">
-                    大家的日语》讲述教材沿用《新日语基础教程1、2》的教学方式。
+                    {{book.description}}
                 </view>
             </view>
         </view>
         <view class="list">
-            <view class="list-item" @tap="handleTapNavigateToUnit">
-                <view class="list-item__title">第1课</view>
-                <view class="list-item__subtitle">共21词</view>
-                <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
-            </view>
-            <view class="list-item">
-                <view class="list-item__title">第2课</view>
-                <view class="list-item__subtitle">共21词</view>
-                <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
-            </view>
-            <view class="list-item">
-                <view class="list-item__title">第3课</view>
-                <view class="list-item__subtitle">共21词</view>
+            <view class="list-item" wx:for="{{unitList}}" wx:key="id" @tap="handleNavigateToUnit({{item}})">
+                <view class="list-item__title">{{item.name}}</view>
+                <view class="list-item__subtitle">共{{item.wordCount}}词</view>
                 <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
             </view>
         </view>
@@ -70,22 +61,76 @@
 
 <script>
     import wepy from 'wepy'
+    import bookApi from '../../apis/book'
+    import unitApi from '../../apis/unit'
+    import Tips from '../../utils/Tips'
+    import Cache from '../../utils/Cache'
 
     export default class BookIndex extends wepy.page {
         data = {
-
+            book: {},
+            readingBook: {},
+            unitList: []
         }
 
-        methods = {
-        	handleTapNavigateToUnit(e) {
-                wx.navigateTo({
-                    url: '/pages/book/unit'
-                })
+        computed = {
+            isTopping () {
+                const { readingBook, book } = this
+                return book.id === readingBook.id
             }
         }
 
-        onReady () {
+        methods = {
+        	handleNavigateToUnit(unit) {
+                wx.navigateTo({
+                    url: `/pages/book/unit?unitId=${unit.id}`
+                })
+            },
+            handleToggleTopping() {
+                if (this.isTopping) {
+                    this.readingBook = {}
+                    Cache.removeReadingBook()
+                } else {
+                    this.readingBook = this.book
+                    Cache.setReadingBook(this.book)
+                }
+                this.$apply()
+            }
+        }
 
+        async loadData (bookId) {
+            let { resourceUrl } = this.$parent.globalData
+
+            let readingBook = Cache.getReadingBook()
+            if (readingBook) {
+                this.readingBook = readingBook
+            }
+
+            let bookDetailPromise = bookApi.get({bookId})
+            let unitListPromise = unitApi.get({bookId})
+
+            let bookDetailResponse = await bookDetailPromise
+            let unitListResponse = await unitListPromise
+
+            if (!bookDetailResponse.success) {
+                Tips.error(bookDetailResponse.message)
+                return
+            }
+            let book = bookDetailResponse.data
+            book.imageUrl = `${resourceUrl}${book.imageUrl}`
+            this.book = book
+
+            if (!unitListResponse.success) {
+                Tips.error(unitListResponse.message)
+                return
+            }
+            this.unitList = unitListResponse.data
+
+            this.$apply()
+        }
+
+        onLoad (option) {
+            this.loadData(option.bookId)
         }
     }
 </script>
