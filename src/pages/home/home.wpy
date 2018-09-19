@@ -133,7 +133,7 @@
 	    				{{readingBook.description}}
 	    			</view>
     			</view>
-    			<view class="topping__studying" @tap="handleNavigateToUnit({{readingBook.readingUnit}})">
+    			<view wx:if="{{readingBook.readingUnit != null}}" class="topping__studying" @tap="handleNavigateToUnit({{readingBook.readingUnit}})">
     				继续学习 {{readingBook.readingUnit.name}}
     			</view>
     		</view>
@@ -174,7 +174,7 @@
         	},
         	handleNavigateToUnit(unit) {
         		wx.navigateTo({
-        			url: `/pages/book/unit?unitId=${unit.id}`
+        			url: `/pages/book/unit?bookId=${unit.bookId}&unitId=${unit.id}`
         		})
         	},
         	handleNavigateToBook(book) {

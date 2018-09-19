@@ -7,7 +7,7 @@ export default class Cache {
     return wx.removeStorageSync('readingBook')
   }
 
-  static setReadingBook(data, option = {merge: true}) {
+  static setReadingBook(data, option = {merge: false}) {
     if (!option.merge) {
       wx.setStorageSync('readingBook', data)
       return data
@@ -27,6 +27,8 @@ export default class Cache {
   static setReadingUnit(data) {
     return this.setReadingBook({
       readingUnit: data
+    }, {
+      merge: true
     })
   }
 }

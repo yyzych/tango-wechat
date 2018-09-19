@@ -47,38 +47,30 @@
                     class="search__input" 
                     type="text" 
                     placeholder-class="search__placeholder"
+                    value="{{keyword}}" 
+                    @input="handleInput"
                     placeholder="假名/汉字/意思">
             </view>
-            <view class="search__cancel color-primary">取消</view>
+            <view class="search__cancel color-primary" @tap="handleCancel">取消</view>
         </view>
         <view class="list list--word">
-            <view class="list-item list-item--word">
-                <view class="left">
-                    <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
+            <view class="list-item list-item--word" wx:for="{{wordList}}" wx:key="id">
+                <view class="list-item--word__prounce-wrapper" @tap="handleProunce({{item}})">
+                    <image class="{{ playing && playingWordId === item.id ? 'list-item--word__prounce-audio list-item--word__prounce-audio--playing' : 'list-item--word__prounce-audio'}}" src="../../images/icons/prounce-audio.png"></image>
                 </view>
-                <view class="middle">
-                    <view class="list-item__title">第1课</view>
-                    <view class="list-item__subtitle">共21词</view>
-                </view>
-                <view class="right">
-                    <text class="list-item--word__type">[代词]</text>
-                    <text class="list-item--word__explantion">学生</text>
-                </view>
-            </view>
-            <view class="list-item list-item--word">
-                <view class="left">
-                    <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                </view>
-                <view class="middle">
-                    <view class="list-item__title">第1课</view>
-                </view>
-                <view class="right">
-                    <text class="list-item--word__type">[代词]</text>
-                    <text class="list-item--word__explantion">学生</text>
+                <view class="list-item--word__detail-wrapper" @tap="handleNavigateToWord({{item}})">
+                    <view class="left">
+                        <view class="list-item__title">{{item.kana}}</view>
+                        <view class="list-item__subtitle">{{item.kanji}}</view>
+                    </view>
+                    <view class="right">
+                        <text class="list-item--word__type">{{item.type ? '['+item.type+']' : ''}}</text>
+                        <text class="list-item--word__explantion">{{item.explanation}}</text>
+                    </view>
                 </view>
             </view>
         </view>
-        <view class="completion">
+        <view class="completion" wx:if="{{keyword != '' && loading == false}}">
             <view class="search-online color-primary">在线搜索</view>
         </view>
     </view>
@@ -87,18 +79,78 @@
 
 <script>
     import wepy from 'wepy'
+    import wordApi from '../../apis/word'
+    import Tips from '../../utils/Tips'
+
+    let innerAudioContext
 
     export default class SearchIndex extends wepy.page {
         data = {
-
+            playing: false,
+            wordList: [],
+            playingWordId: '',
+            keyword: '',
+            loading: false
         }
 
         methods = {
-        	
+            handleNavigateToWord (word) {
+                wx.navigateTo({
+                    url: `/pages/word/index?bookId=${word.bookId}&wordId=${word.id}&multiple=0`
+                })
+            },
+            handleProunce (word) {
+                if (this.playing) {
+                    return
+                }
+                let { prounceUrl } = this.$parent.globalData
+                this.playing = true
+                this.playingWordId = word.id
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.play()
+            },
+            handleInput (e) {
+                this.keyword = e.detail.value
+                if (this.timer) {
+                    clearTimeout(this.timer)
+                }
+                if (this.keyword == '') {
+                    this.wordList = []
+                    return
+                }
+                this.loading = true
+                this.timer = setTimeout(_ => {
+                    wordApi.search({keyword: this.keyword}).then(response => {
+                        this.loading = false
+                        if (!response.success) {
+                            Tips.error(response.message)
+                            return
+                        }
+                        this.wordList = response.data
+                        this.$apply()
+                    }).catch(err => {
+                        this.loading = false
+                        Tips.error(err)
+                        this.$apply()
+                    })
+                }, 600)
+            },
+            handleCancel (e) {
+                this.keyword = ''
+                this.wordList = []
+            }
         }
 
-        onReady () {
-
+        onLoad (option) {
+            if (innerAudioContext != null) {
+                innerAudioContext.destroy()
+            }
+            innerAudioContext = wx.createInnerAudioContext()
+            innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.playingWordId = ''
+                this.$apply()
+            })
         }
     }
 </script>

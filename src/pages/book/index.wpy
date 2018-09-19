@@ -76,14 +76,17 @@
         computed = {
             isTopping () {
                 const { readingBook, book } = this
-                return book.id === readingBook.id
+                return book.id == readingBook.id
             }
         }
 
         methods = {
         	handleNavigateToUnit(unit) {
+                if (this.isTopping) {
+                    Cache.setReadingUnit(unit)
+                }
                 wx.navigateTo({
-                    url: `/pages/book/unit?unitId=${unit.id}`
+                    url: `/pages/book/unit?bookId=${unit.bookId}&unitId=${unit.id}`
                 })
             },
             handleToggleTopping() {

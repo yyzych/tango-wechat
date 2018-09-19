@@ -4,6 +4,7 @@
         text-align: center;
         line-height: 1.6;
         color:#333;
+        padding:0 20rpx;
 
         &__kana {
             font-size:66rpx;
@@ -44,6 +45,9 @@
             width:60rpx;
             margin-bottom:-7rpx;
         }
+        &__icon--playing {
+            opacity: 0.3;
+        }
     }
     .report {
         position: fixed;
@@ -59,6 +63,10 @@
         padding:10rpx 0;
         color:#666;
         font-size:24rpx;
+
+        &--invisibility{
+            visibility:hidden;
+        }
     }
     .arrow {
         height: 80rpx;
@@ -79,28 +87,28 @@
 </style>
 <template>
     <view>
-        <view class="progress">
-            4/807
+        <view class="{{showProgress ? 'progress':'progress progress--invisibility'}}">
+            {{wordIndex + 1}}/{{wordList.length}}
         </view>
     	<view class="word">
             <view class="word__kana">
-                <text>わたし</text>
-                <view class="prounce">
-                    <image class="prounce__icon" src="../../images/icons/prounce-audio.png"></image>
+                <text>{{word.kana}}</text>
+                <view class="prounce" @tap="handleProunce({{word}})">
+                    <image class="{{ playing ? 'prounce__icon prounce__icon--playing' : 'prounce__icon'}}" src="../../images/icons/prounce-audio.png"></image>
                 </view>
             </view>   
             <view class="word__kanji">
-                <text class="word__type">[名词]</text>
-                <text>私</text>
-                <text class="word__tone">⑥</text>
+                <text class="word__type">{{word.type ? '['+word.type+']' : ''}}</text>
+                <text>{{word.kanji}}</text>
+                <text class="word__tone">{{word.tone}}</text>
             </view>
-            <view class="word__explantion">我们</view>
-            <view class="word__from">来自大家的日语</view>
+            <view class="word__explantion">{{word.explanation}}</view>
+            <view class="word__from">来自 {{book.name}}</view>
         </view>
-        <view class="prev">
+        <view class="prev" wx:if="{{showPrev}}" @tap="handlePrev">
             <image class="arrow" src="../../images/icons/arrow-left.png"></image>
         </view>
-        <view class="next">
+        <view class="next" wx:if="{{showNext}}" @tap="handleNext">
             <image class="arrow" src="../../images/icons/arrow-right.png"></image>
         </view>
         <view class="report">
@@ -114,7 +122,14 @@
 <script>
     // ①②③④⑤⑥⑦⑧⑨⑩
     import wepy from 'wepy'
+    import bookApi from '../../apis/book'
+    import unitApi from '../../apis/unit'
+    import wordApi from '../../apis/word'
     import Writer from '../../components/writer'
+    import Cache from '../../utils/Cache'
+    import Tips from '../../utils/Tips'
+
+    let innerAudioContext
 
     export default class WordIndex extends wepy.page {
         components = {
@@ -127,15 +142,147 @@
         }
 
         data = {
+            bookId: '',
+            wordId: '',
+            multiple: false,
+            playing: false,
+            unitList: [],
+            wordList: [],
+            book: {},
+            readingBook: {},
+            wordIndex: -1
+        }
 
+        computed = {
+            word: function() {
+                if (this.wordIndex != -1) {
+                    let word = {
+                        ...this.wordList[this.wordIndex]
+                    }
+                    let mapping = [
+                        '⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'
+                    ]
+                    word.tone = mapping[+word.tone]
+                    return word
+                }
+                return {}
+            },
+            unitId: function() {
+                return this.word.unitId
+            },
+            showProgress: function() {
+                return this.multiple
+            },
+            showPrev: function() {
+                return this.wordIndex > 0
+            },
+            showNext: function() {
+                return this.wordIndex < this.wordList.length - 1
+            },
+            isTopping () {
+                return this.bookId == this.readingBook.id
+            }
+        }
+
+        watch = {
+            unitId: function(current, prevent) {
+                if (this.isTopping) {
+                    let unit = this.unitList.find(unit => unit.id == this.unitId)
+                    Cache.setReadingUnit(unit)
+                }
+            }
         }
 
         methods = {
-        	
+        	handlePrev () {
+                if (this.wordIndex <= 0) {
+                    return
+                }
+                this.wordIndex = this.wordIndex - 1
+            },
+            handleNext () {
+                if (this.wordIndex >= this.wordList.length - 1) {
+                    return
+                }
+                this.wordIndex = this.wordIndex + 1
+            },
+            handleProunce (word) {
+                if (this.playing) {
+                    return
+                }
+                let { prounceUrl } = this.$parent.globalData
+                this.playing = true
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.play()
+            }
+        }
+
+        async loadData () {
+            let readingBook = Cache.getReadingBook()
+            if (readingBook) {
+                this.readingBook = readingBook
+            }
+
+            let bookPromsie = bookApi.get({bookId: this.bookId})
+            let bookResponse = await bookPromsie
+            if (!bookResponse.success) {
+                Tips.error(bookResponse.message)
+                return
+            }
+
+            this.book = bookResponse.data
+            if (this.multiple) {
+                let unitListPromise = unitApi.get({
+                    bookId: this.bookId
+                })
+                let wordListPromise = wordApi.getAll({
+                    bookId: this.bookId
+                })
+
+                let unitListResponse = await unitListPromise
+                if (!unitListResponse.success) {
+                    Tips.error(unitListResponse.message)
+                    return
+                }
+                this.unitList = unitListResponse.data
+
+                let wordListResponse = await wordListPromise
+                if (!wordListResponse.success) {
+                    Tips.error(wordListResponse.message)
+                    return
+                }
+                this.wordList = wordListResponse.data
+                this.wordIndex = this.wordList.findIndex(word => word.id == this.wordId)
+            } else {
+                let wordDetailPromise = wordApi.get({wordId: this.wordId})
+                let wordDetailResponse = await wordDetailPromise
+                if (!wordDetailResponse.success) {
+                    Tips.error(wordDetailResponse.message)
+                    return
+                }
+                this.wordList = [wordDetailResponse.data]
+                this.wordIndex = 0
+            }
+            this.$apply()
         }
 
         onReady () {
             this.$invoke('writer', 'init')
+        }
+
+        onLoad (option) {
+            if (innerAudioContext != null) {
+                innerAudioContext.destroy()
+            }
+            innerAudioContext = wx.createInnerAudioContext()
+            innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.$apply()
+            })
+            this.wordId = option.wordId
+            this.bookId = option.bookId
+            this.multiple = option.multiple == null ? true : option.multiple == 1
+            this.loadData()
         }
     }
 </script>

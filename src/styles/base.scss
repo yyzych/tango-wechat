@@ -84,16 +84,26 @@ page {
         width: 40rpx;
         margin-bottom: -10rpx;
     }
-
-    .left {
+    &__prounce-audio--playing {
+        opacity: 0.3;
+    }
+    &__prounce-wrapper {
         flex-grow: 0;
         padding: 0 20rpx 0 0;
     }
-    .middle {
+    &__detail-wrapper {
         flex-grow: 1;
-    }
-    .right {
-        flex-grow: 1;
-        text-align: right;
+        display: flex;
+        align-items: center;
+
+        .left {
+            flex-grow: 1;
+            min-width:40%;
+        }
+
+        .right {
+            flex-grow: 1;
+            text-align: right;
+        }
     }
 }

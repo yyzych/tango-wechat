@@ -12,186 +12,27 @@
 
 <template>
     <view>
-        <scroll-view class="scroller" scroll-y="true">
+        <scroll-view class="scroller" scroll-y="true" scroll-top="{{scrollTop}}">
         	<view class="list list--word">
-                <view class="list-item list-item--word" @tap="handleTapNavigateToWord">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
+                <view class="list-item list-item--word" wx:for="{{wordList}}" wx:key="id">
+                    <view class="list-item--word__prounce-wrapper" @tap="handleProunce({{item}})">
+                        <image class="{{ playing && playingWordId === item.id ? 'list-item--word__prounce-audio list-item--word__prounce-audio--playing' : 'list-item--word__prounce-audio'}}" src="../../images/icons/prounce-audio.png"></image>
                     </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                        <view class="list-item__subtitle">共21词</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
-                    </view>
-                </view>
-                <view class="list-item list-item--word">
-                    <view class="left">
-                        <image class="list-item--word__prounce-audio" src="../../images/icons/prounce-audio.png"></image>
-                    </view>
-                    <view class="middle">
-                        <view class="list-item__title">第1课</view>
-                    </view>
-                    <view class="right">
-                        <text class="list-item--word__type">[代词]</text>
-                        <text class="list-item--word__explantion">学生</text>
+                    <view class="list-item--word__detail-wrapper" @tap="handleNavigateToWord({{item}})">
+                        <view class="left">
+                            <view class="list-item__title">{{item.kana}}</view>
+                            <view class="list-item__subtitle">{{item.kanji}}</view>
+                        </view>
+                        <view class="right">
+                            <text class="list-item--word__type">{{item.type ? '['+item.type+']' : ''}}</text>
+                            <text class="list-item--word__explantion">{{item.explanation}}</text>
+                        </view>
                     </view>
                 </view>
             </view>
-            <view class="next-unit color-primary">
-                下一课
+            <view class="next-unit color-primary" @tap="handleLoadNextUnitWord">
+                <text wx:if="{{nextUnitId != ''}}">下一课</text>
+                <text wx:else style="color: #b0b0b0;">到底了</text>
             </view>
         </scroll-view>
         <writer id="unitWriter"></writer>
@@ -204,6 +45,12 @@
     // 使用scroll-view实现列表滚动，同时禁用整个page的滚动（disableScroll: true）
     import wepy from 'wepy'
     import Writer from '../../components/writer'
+    import wordApi from '../../apis/word'
+    import unitApi from '../../apis/unit'
+    import Tips from '../../utils/Tips'
+    import Cache from '../../utils/Cache'
+
+    let innerAudioContext
 
     export default class Unit extends wepy.page {
         config = {
@@ -215,19 +62,129 @@
         }
 
         data = {
+            bookId: '',
+            unitId: '',
+            readingBook: {},
+            unitList: [],
+            wordList: [],
+            playing: false,
+            playingWordId: '',
+            scrollTop: 0
+        }
 
+        computed = {
+            nextUnit: function() {
+                let length = this.unitList.length
+                let index = this.unitList.findIndex(unit => unit.id == this.unitId)
+                if (index + 1 >= length) {
+                    return null
+                } else {
+                    return this.unitList[index + 1]
+                }
+            },
+            nextUnitId: function() {
+                return this.nextUnit ? this.nextUnit.id : ''
+            },
+            isTopping () {
+                return this.bookId == this.readingBook.id
+            }
         }
 
         methods = {
-    	   handleTapNavigateToWord(e) {
+    	    handleNavigateToWord (word) {
                 wx.navigateTo({
-                    url: '/pages/word/index'
+                    url: `/pages/word/index?bookId=${word.bookId}&unitId=${word.unitId}&wordId=${word.id}`
                 })
+            },
+            handleLoadNextUnitWord () {
+                if (this.nextUnitId) {
+                    this.loadNextUnitWord(this.bookId, this.nextUnitId)
+                }
+            },
+            handleProunce (word) {
+                if (this.playing) {
+                    return
+                }
+                let { prounceUrl } = this.$parent.globalData
+                this.playing = true
+                this.playingWordId = word.id
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.play()
+
+                // let backgroundAudioManager = wx.getBackgroundAudioManager()
+                // backgroundAudioManager.title = word.kana
+                // backgroundAudioManager.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                // backgroundAudioManager.play()
             }
         }
 
         onReady () {
             this.$invoke('writer', 'init')
+        }
+
+        async loadNextUnitWord (bookId, unitId) {
+            let wordListPromise = wordApi.getAll({
+                bookId,
+                unitId
+            })
+            let wordListResponse = await wordListPromise
+            if (!wordListResponse.success) {
+                Tips.error(wordListResponse.message)
+                return
+            }
+            this.wordList = wordListResponse.data
+            this.unitId = this.nextUnitId
+            this.scrollTop = this.scrollTop - 1 // bug: 值必须不一样才能更新
+
+            if (this.isTopping) {
+                let unit = this.unitList.find(unit => unit.id == this.unitId)
+                Cache.setReadingUnit(unit)
+            }
+
+            this.$apply()
+        }
+
+        async loadData (bookId, unitId) {
+            let readingBook = Cache.getReadingBook()
+            if (readingBook) {
+                this.readingBook = readingBook
+            }
+
+            let unitListPromise = unitApi.get({bookId})
+            let unitListResponse = await unitListPromise
+            if (!unitListResponse.success) {
+                Tips.error(unitListResponse.message)
+                return
+            }
+            this.unitList = unitListResponse.data
+
+            let wordListPromise = wordApi.getAll({
+                bookId,
+                unitId
+            })
+            let wordListResponse = await wordListPromise
+            if (!wordListResponse.success) {
+                Tips.error(wordListResponse.message)
+                return
+            }
+            this.wordList = wordListResponse.data
+
+            this.$apply()
+        }
+
+        onLoad (option) {
+            if (innerAudioContext != null) {
+                innerAudioContext.destroy()
+            }
+            innerAudioContext = wx.createInnerAudioContext()
+            innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.playingWordId = ''
+                this.$apply()
+            })
+            this.bookId = option.bookId
+            this.unitId = option.unitId
+            this.loadData(option.bookId, option.unitId)
         }
     }
 </script>
