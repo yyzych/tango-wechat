@@ -84,6 +84,17 @@
         top: 45%;
         transform: translateY(-50%);
     }
+    .button-feedback {
+        background: transparent;
+        border: none;
+        font-size: 12px;
+        color: #999;
+
+        // bug: 要用after才能去除边框
+        &::after{
+          border: none;
+        }
+    }
 </style>
 <template>
     <view>
@@ -112,7 +123,7 @@
             <image class="arrow" src="../../images/icons/arrow-right.png"></image>
         </view>
         <view class="report">
-            报告问题单词
+            <button class="button-feedback" open-type="feedback">报告问题单词</button>
         </view>
         <writer id="wordWriter"></writer>
     </view>
@@ -162,7 +173,7 @@
                     let mapping = [
                         '⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'
                     ]
-                    word.tone = mapping[+word.tone]
+                    word.tone = word.tone == '' ? '' : mapping[+word.tone]
                     return word
                 }
                 return {}
@@ -223,6 +234,8 @@
                 this.readingBook = readingBook
             }
 
+            wx.showLoading()
+
             let bookPromsie = bookApi.get({bookId: this.bookId})
             let bookResponse = await bookPromsie
             if (!bookResponse.success) {
@@ -242,6 +255,7 @@
                 let unitListResponse = await unitListPromise
                 if (!unitListResponse.success) {
                     Tips.error(unitListResponse.message)
+                    wx.hideLoading()
                     return
                 }
                 this.unitList = unitListResponse.data
@@ -249,6 +263,7 @@
                 let wordListResponse = await wordListPromise
                 if (!wordListResponse.success) {
                     Tips.error(wordListResponse.message)
+                    wx.hideLoading()
                     return
                 }
                 this.wordList = wordListResponse.data
@@ -258,12 +273,14 @@
                 let wordDetailResponse = await wordDetailPromise
                 if (!wordDetailResponse.success) {
                     Tips.error(wordDetailResponse.message)
+                    wx.hideLoading()
                     return
                 }
                 this.wordList = [wordDetailResponse.data]
                 this.wordIndex = 0
             }
             this.$apply()
+            wx.hideLoading()
         }
 
         onReady () {

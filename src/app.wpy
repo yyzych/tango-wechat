@@ -5,12 +5,20 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
+  import WxUtils from './utils/WxUtils'
+  import Tips from './utils/Tips'
+  import Authorize from './utils/Authorize'
+  import {
+    baseUrl,
+    resourceUrl,
+    prounceUrl
+  } from './config'
 
   export default class app extends wepy.app {
     globalData = {
-      baseUrl: 'http://192.168.0.104:8080/v1',
-      resourceUrl: 'http://192.168.0.104:8080',
-      prounceUrl: 'https://www.japandict.com/voice/read'
+      baseUrl,
+      resourceUrl,
+      prounceUrl
     };
     config = {
       pages: [
@@ -18,6 +26,7 @@
         'pages/setting/setting',
         'pages/setting/advice',
         'pages/setting/about',
+        'pages/setting/zanshang',
         'pages/book/index',
         'pages/book/unit',
         'pages/search/index',
@@ -50,6 +59,7 @@
         ]
       }
     }
+
     constructor () {
       super();
       // 注册中间件
@@ -57,8 +67,13 @@
       this.use('promisify'); // promise化请求
     }
 
+    onShow () {
+      console.log('app show')
+    }
+
     onLaunch () {
-      // WxUtils.wxHideShareMenu()
+      Authorize.init()
+      console.log('app launch')
     }
   }
 </script>

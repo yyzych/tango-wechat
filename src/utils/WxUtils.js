@@ -7,14 +7,10 @@ export default class WxUtils {
     return new Promise((resolve, reject) => {
       wx.login({
         success: (res) => {
-          if (res.code) {
-            resolve(res.code)
-          } else {
-            resolve(0)
-          }
+          resolve(res.code)
         },
         fail: (err) => {
-          resolve(0)
+          resolve(err)
         }
       })
     })
@@ -27,7 +23,7 @@ export default class WxUtils {
           resolve(true)
         },
         fail: (err) => {
-          resolve(false)
+          resolve(err)
         }
       })
     })
@@ -40,7 +36,7 @@ export default class WxUtils {
           resolve(res)
         },
         fail: (err) => {
-          resolve(false)
+          resolve(err)
         }
       })
     })

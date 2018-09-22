@@ -71,7 +71,7 @@
             </view>
         </view>
         <view class="completion" wx:if="{{keyword != '' && loading == false}}">
-            <view class="search-online color-primary">在线搜索</view>
+            <view class="search-online" style="color: #b0b0b0;">没有数据</view>
         </view>
     </view>
 </template>

@@ -27,19 +27,31 @@
 			}
 		}
 	}
+
+  .button-feedback {
+    opacity:0;
+    position:absolute;
+    width:100%;
+    top:0;
+    right:0;
+    height:100%;
+    z-index:3;
+  }
 </style>
 <template>
     <view>
     	<view class="profile">
-    		<view class="profile__avatar">
-	    		<image src="/images/avatar.jpg"></image>
-    		</view>
-    		<view class="profile__detail">
-    			<view class="profile__name">叶喽喽</view>
-    			<view class="profile__rank">部分权限<!-- /会员权限/至尊权限 --></view>
-    		</view>
+        <view wx:if="{{canIUse}}">
+      		<view class="profile__avatar">
+  	    		<image src="{{userInfo.avatarUrl}}"></image>
+      		</view>
+      		<view class="profile__detail">
+      			<view class="profile__name">{{userInfo.nickName}}</view>
+      			<!-- <view class="profile__rank">部分权限/会员权限/至尊权限</view> -->
+      		</view>
+        </view>
     	</view>
-    	<view class="list" style="margin-bottom: 20rpx;">
+    	<view class="list" wx:if="{{false}}" style="margin-bottom: 20rpx;">
     		<view class="list-item">
     			<view class="list-item__key">每日学习提醒</view>
     			<view class="list-item__value">
@@ -51,19 +63,25 @@
     		</view>
     	</view>
     	<view class="list">
-    		<view class="list-item" @tap="handleNavigateToAbout">
-    			<view class="list-item__key">关于我们</view>
-    			<image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
-    		</view>
-    		<view class="list-item" @tap="handleNavigateToAdvice">
-    			<view class="list-item__key">意见反馈</view>
-    			<image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
-    		</view>
-    		<view class="list-item">
-    			<view class="list-item__key">社区QQ群</view>
-    			<view class="list-item__value"  @tap="handleJoinQQ">点击复制</view>
-    		</view>
-    	</view>
+        <view class="list-item" @tap="handleNavigateToAbout">
+          <view class="list-item__key">关于我们</view>
+          <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+        </view>
+        <view class="list-item" @tap="handleZan">
+            <view class="list-item__key">赞赏作者</view>
+            <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+        </view>
+        <view class="list-item">
+          <view class="list-item__key">意见反馈</view>
+          <image class="list-item__arrow" src="../../images/icons/arrow-right.png"></image>
+          <button class="button-feedback" open-type="feedback" type="primary">提交</button>
+        </view>
+        <view class="list-item">
+          <view class="list-item__key">社区QQ群</view>
+          <view class="list-item__value"  @tap="handleJoinQQ">点击复制</view>
+        </view>
+      </view>
+      <button style="margin:20px;"  wx:if="{{!canIUse}}" open-type="getUserInfo" type="primary" @getuserinfo="handleGetUserInfo">授权</button>
     </view>
 </template>
 
@@ -71,10 +89,12 @@
 <script>
   import wepy from 'wepy'
   import Tips from '../../utils/Tips'
+  import Authorize from '../../utils/Authorize'
 
   export default class Setting extends wepy.page {
   	data = {
-
+      canIUse: false,
+      userInfo: {}
   	}
 
   	methods = {
@@ -92,7 +112,38 @@
         wx.navigateTo({
           url: '/pages/setting/about'
         })
+      },
+      handleGetUserInfo(e) {
+        this.getSetting()
+      },
+      handleZan (e) {
+        wx.navigateTo({
+          url: '/pages/setting/zanshang'
+        })
       }
   	}
+
+    async getSetting () {
+      return Authorize.getAuthSetting()
+        .then(scope => {
+          if (scope.userInfo) {
+            this.canIUse = true
+            return Authorize.getUserInfo()
+          } else {
+            this.canIUse = false
+            return void 0
+          }
+        })
+        .then(userInfo => {
+          if (userInfo) {
+            this.userInfo = userInfo
+          }
+          this.$apply()
+        })
+    }
+
+    onShow () {
+      this.getSetting()
+    }
   }
 </script>

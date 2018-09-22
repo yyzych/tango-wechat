@@ -1,0 +1,46 @@
+<style lang="scss">
+  .logo-wrap {
+    position:absolute;
+    top:35%;
+    left:50%;
+    transform:translate(-50%, -50%);
+  }
+  .logo {
+    width:260px;
+    height:260px;
+  }
+  .text {
+    color: #b0b0b0;
+    text-align: center;
+    margin-top: 40rpx;
+  }
+</style>
+<template>
+    <view class="logo-wrap">
+      <image class="logo" src="../../images/zanshang.jpeg" @tap="previewImage"></image>
+      <view class="text">
+        点击图片 长按识别
+      </view>
+    </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+  import Tips from '../../utils/Tips'
+
+  export default class ZanShang extends wepy.page {
+  	data = {
+
+  	}
+
+  	methods = {
+      previewImage: function (e) {  
+        let { resourceUrl } = this.$parent.globalData
+        wx.previewImage({
+            urls: [`${resourceUrl}/assets/images/zanshang.jpeg`] // 需要预览的图片http链接列表
+        })
+      }
+    }
+  }
+</script>

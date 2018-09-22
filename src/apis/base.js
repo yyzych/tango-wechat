@@ -1,6 +1,6 @@
-import wepy from 'wepy';
+import { baseUrl } from '../config'
 
 export default class base {
   // 获取基本URL
-  static baseUrl = wepy.$instance.globalData.baseUrl;
+  static baseUrl = baseUrl
 }
