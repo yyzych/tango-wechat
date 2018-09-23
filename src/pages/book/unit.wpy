@@ -108,7 +108,7 @@
                 let { prounceUrl } = this.$parent.globalData
                 this.playing = true
                 this.playingWordId = word.id
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
                 innerAudioContext.play()
 
                 // let backgroundAudioManager = wx.getBackgroundAudioManager()
@@ -123,6 +123,7 @@
         }
 
         async loadNextUnitWord (bookId, unitId) {
+            wx.showLoading({mask:true})
             let wordListPromise = wordApi.getAll({
                 bookId,
                 unitId
@@ -130,6 +131,7 @@
             let wordListResponse = await wordListPromise
             if (!wordListResponse.success) {
                 Tips.error(wordListResponse.message)
+                wx.hideLoading()
                 return
             }
             this.wordList = wordListResponse.data
@@ -142,6 +144,7 @@
             }
 
             this.$apply()
+            wx.hideLoading()
         }
 
         async loadData (bookId, unitId) {
@@ -150,10 +153,13 @@
                 this.readingBook = readingBook
             }
 
+            wx.showLoading({mask:true})
+
             let unitListPromise = unitApi.get({bookId})
             let unitListResponse = await unitListPromise
             if (!unitListResponse.success) {
                 Tips.error(unitListResponse.message)
+                wx.hideLoading()
                 return
             }
             this.unitList = unitListResponse.data
@@ -165,11 +171,13 @@
             let wordListResponse = await wordListPromise
             if (!wordListResponse.success) {
                 Tips.error(wordListResponse.message)
+                wx.hideLoading()
                 return
             }
             this.wordList = wordListResponse.data
 
             this.$apply()
+            wx.hideLoading()
         }
 
         onLoad (option) {

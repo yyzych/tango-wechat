@@ -223,7 +223,7 @@
                 }
                 let { prounceUrl } = this.$parent.globalData
                 this.playing = true
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
                 innerAudioContext.play()
             }
         }
@@ -234,7 +234,7 @@
                 this.readingBook = readingBook
             }
 
-            wx.showLoading()
+            wx.showLoading({mask:true})
 
             let bookPromsie = bookApi.get({bookId: this.bookId})
             let bookResponse = await bookPromsie

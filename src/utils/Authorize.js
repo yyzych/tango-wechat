@@ -1,7 +1,7 @@
 import userApi from '../apis/user'
 
 export default class Authorize {
-  static async init () {
+  static init () {
     this.inited = false
     this.code = ''
     this.role = 0
@@ -17,8 +17,8 @@ export default class Authorize {
       writePhotosAlbum: false,
       camera: false
     }
-    await this.getCode()
-    await this.getSession()
+    // await this.getCode()
+    // await this.getSession()
     // await this.getRole()
     this.inited = true
   }

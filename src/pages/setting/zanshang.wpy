@@ -6,8 +6,8 @@
     transform:translate(-50%, -50%);
   }
   .logo {
-    width:260px;
-    height:260px;
+    width:520rpx;
+    height:520rpx;
   }
   .text {
     color: #b0b0b0;

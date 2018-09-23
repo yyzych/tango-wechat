@@ -43,7 +43,7 @@
             <view class="search__wrapper">
                 <input 
                     focus="true"
-                    confirm-type="search"
+                    confirm-type="done"
                     class="search__input" 
                     type="text" 
                     placeholder-class="search__placeholder"
@@ -70,7 +70,7 @@
                 </view>
             </view>
         </view>
-        <view class="completion" wx:if="{{keyword != '' && loading == false}}">
+        <view class="completion" wx:if="{{keyword != '' && loading == false && wordList.length == 0}}">
             <view class="search-online" style="color: #b0b0b0;">没有数据</view>
         </view>
     </view>
@@ -106,7 +106,7 @@
                 let { prounceUrl } = this.$parent.globalData
                 this.playing = true
                 this.playingWordId = word.id
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + word.kana
+                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
                 innerAudioContext.play()
             },
             handleInput (e) {

@@ -1,3 +1,3 @@
-export const baseUrl = 'http://192.168.6.104:8080/v1'
-export const resourceUrl = 'http://192.168.6.104:8080'
+export const baseUrl = 'http://107.191.60.240:8088/v1'
+export const resourceUrl = 'http://107.191.60.240:8088'
 export const prounceUrl = 'https://www.japandict.com/voice/read'

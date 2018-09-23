@@ -109,6 +109,8 @@
                 this.readingBook = readingBook
             }
 
+            wx.showLoading({mask:true})
+
             let bookDetailPromise = bookApi.get({bookId})
             let unitListPromise = unitApi.get({bookId})
 
@@ -117,6 +119,7 @@
 
             if (!bookDetailResponse.success) {
                 Tips.error(bookDetailResponse.message)
+                wx.hideLoading()
                 return
             }
             let book = bookDetailResponse.data
@@ -125,11 +128,13 @@
 
             if (!unitListResponse.success) {
                 Tips.error(unitListResponse.message)
+                wx.hideLoading()
                 return
             }
             this.unitList = unitListResponse.data
 
             this.$apply()
+            wx.hideLoading()
         }
 
         onLoad (option) {
