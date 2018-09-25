@@ -136,6 +136,7 @@
     import bookApi from '../../apis/book'
     import unitApi from '../../apis/unit'
     import wordApi from '../../apis/word'
+    import otherApi from '../../apis/other'
     import Writer from '../../components/writer'
     import Cache from '../../utils/Cache'
     import Tips from '../../utils/Tips'
@@ -221,9 +222,8 @@
                 if (this.playing) {
                     return
                 }
-                let { prounceUrl } = this.$parent.globalData
                 this.playing = true
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
+                innerAudioContext.src = otherApi.getProunceUrl(word.kana)
                 innerAudioContext.play()
             }
         }
@@ -293,6 +293,11 @@
             }
             innerAudioContext = wx.createInnerAudioContext()
             innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.$apply()
+            })
+            innerAudioContext.onError(() => {
+                Tips.error('发音异常')
                 this.playing = false
                 this.$apply()
             })

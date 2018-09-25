@@ -80,6 +80,7 @@
 <script>
     import wepy from 'wepy'
     import wordApi from '../../apis/word'
+    import otherApi from '../../apis/other'
     import Tips from '../../utils/Tips'
 
     let innerAudioContext
@@ -106,7 +107,7 @@
                 let { prounceUrl } = this.$parent.globalData
                 this.playing = true
                 this.playingWordId = word.id
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
+                innerAudioContext.src = otherApi.getProunceUrl(word.kana)
                 innerAudioContext.play()
             },
             handleInput (e) {
@@ -147,6 +148,12 @@
             }
             innerAudioContext = wx.createInnerAudioContext()
             innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.playingWordId = ''
+                this.$apply()
+            })
+            innerAudioContext.onError(() => {
+                Tips.error('发音异常')
                 this.playing = false
                 this.playingWordId = ''
                 this.$apply()

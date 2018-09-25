@@ -31,7 +31,7 @@
 </style>
 
 <template>
-    <view>
+    <view wx:if="{{inited}}">
     	<view class="topping">
             <image class="topping__cover" height="100" width="100" src="{{book.imageUrl}}"></image>
             <view class="topping__profile">
@@ -68,6 +68,7 @@
 
     export default class BookIndex extends wepy.page {
         data = {
+            inited: false,
             book: {},
             readingBook: {},
             unitList: []
@@ -133,6 +134,7 @@
             }
             this.unitList = unitListResponse.data
 
+            this.inited = true
             this.$apply()
             wx.hideLoading()
         }

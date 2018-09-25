@@ -30,7 +30,7 @@
                     </view>
                 </view>
             </view>
-            <view class="next-unit color-primary" @tap="handleLoadNextUnitWord">
+            <view wx:if="{{inited}}" class="next-unit color-primary" @tap="handleLoadNextUnitWord">
                 <text wx:if="{{nextUnitId != ''}}">下一课</text>
                 <text wx:else style="color: #b0b0b0;">到底了</text>
             </view>
@@ -47,6 +47,7 @@
     import Writer from '../../components/writer'
     import wordApi from '../../apis/word'
     import unitApi from '../../apis/unit'
+    import otherApi from '../../apis/other'
     import Tips from '../../utils/Tips'
     import Cache from '../../utils/Cache'
 
@@ -62,6 +63,7 @@
         }
 
         data = {
+            inited: false,
             bookId: '',
             unitId: '',
             readingBook: {},
@@ -105,10 +107,9 @@
                 if (this.playing) {
                     return
                 }
-                let { prounceUrl } = this.$parent.globalData
                 this.playing = true
                 this.playingWordId = word.id
-                innerAudioContext.src = prounceUrl + '?outputFormat=mp3&text=' + encodeURIComponent(word.kana)
+                innerAudioContext.src = otherApi.getProunceUrl(word.kana)
                 innerAudioContext.play()
 
                 // let backgroundAudioManager = wx.getBackgroundAudioManager()
@@ -176,6 +177,7 @@
             }
             this.wordList = wordListResponse.data
 
+            this.inited = true
             this.$apply()
             wx.hideLoading()
         }
@@ -186,6 +188,12 @@
             }
             innerAudioContext = wx.createInnerAudioContext()
             innerAudioContext.onEnded(() => {
+                this.playing = false
+                this.playingWordId = ''
+                this.$apply()
+            })
+            innerAudioContext.onError(() => {
+                Tips.error('发音异常')
                 this.playing = false
                 this.playingWordId = ''
                 this.$apply()

@@ -10,15 +10,13 @@
   import Authorize from './utils/Authorize'
   import {
     baseUrl,
-    resourceUrl,
-    prounceUrl
+    resourceUrl
   } from './config'
 
   export default class app extends wepy.app {
     globalData = {
       baseUrl,
-      resourceUrl,
-      prounceUrl
+      resourceUrl
     };
     config = {
       pages: [
