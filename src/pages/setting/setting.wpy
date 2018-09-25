@@ -100,7 +100,7 @@
   	methods = {
   		handleJoinQQ() {
   			wx.setClipboardData({
-  				data: '932241741'
+  				data: '620889328'
   			})
   		},
       handleNavigateToAdvice() {
