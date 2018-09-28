@@ -216,9 +216,15 @@
                 this.getNextWord()
             },
             handleProunce (word) {
-                if (this.playing) {
-                    return
-                }
+                this.prounce(word)
+            }
+        }
+
+        prounce (word, force) {
+            if (force === true) {
+                innerAudioContext.pause()
+            }
+            if (force === true || !this.playing) {
                 this.playing = true
                 innerAudioContext.src = otherApi.getProunceUrl(word.kana)
                 innerAudioContext.play()
@@ -243,6 +249,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
+            // this.prounce(this.word, true)
         }
 
         async getPrevWord () {
@@ -263,6 +270,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
+            // this.prounce(this.word, true)
         }
 
         async getWord () {
@@ -280,6 +288,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
+            // this.prounce(this.word, true)
         }
 
         async loadData () {
@@ -326,8 +335,9 @@
                 this.playing = false
                 this.$apply()
             })
-            innerAudioContext.onError(() => {
+            innerAudioContext.onError((res) => {
                 Tips.error('发音异常')
+                console.log(res.errMsg, res.errCode)
                 this.playing = false
                 this.$apply()
             })
