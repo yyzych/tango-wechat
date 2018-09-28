@@ -195,7 +195,7 @@
 
         watch = {
             unitId: function(current, prevent) {
-                if (this.isTopping) {
+                if (this.multiple && this.isTopping) {
                     let unit = this.unitList.find(unit => unit.id == this.unitId)
                     Cache.setReadingUnit(unit)
                 }
