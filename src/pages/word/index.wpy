@@ -249,7 +249,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
-            // this.prounce(this.word, true)
+            this.prounce(this.word, true)
         }
 
         async getPrevWord () {
@@ -270,7 +270,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
-            // this.prounce(this.word, true)
+            this.prounce(this.word, true)
         }
 
         async getWord () {
@@ -288,7 +288,7 @@
             this.word = wordDetailResponse.data
             this.loading = false
             this.$apply()
-            // this.prounce(this.word, true)
+            this.prounce(this.word, true)
         }
 
         async loadData () {
