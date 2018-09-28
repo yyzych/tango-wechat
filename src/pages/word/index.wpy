@@ -99,21 +99,21 @@
 <template>
     <view>
         <view class="{{showProgress ? 'progress':'progress progress--invisibility'}}">
-            {{wordIndex + 1}}/{{wordList.length}}
+            {{showWord.index}}/{{book.wordCount}}
         </view>
     	<view class="word">
             <view class="word__kana">
-                <text>{{word.kana}}</text>
-                <view class="prounce" @tap="handleProunce({{word}})">
+                <text>{{showWord.kana}}</text>
+                <view class="prounce" @tap="handleProunce({{showWord}})">
                     <image class="{{ playing ? 'prounce__icon prounce__icon--playing' : 'prounce__icon'}}" src="../../images/icons/prounce-audio.png"></image>
                 </view>
             </view>   
             <view class="word__kanji">
-                <text class="word__type">{{word.type ? '['+word.type+']' : ''}}</text>
-                <text>{{word.kanji}}</text>
-                <text class="word__tone">{{word.tone}}</text>
+                <text class="word__type">{{showWord.type ? '['+showWord.type+']' : ''}}</text>
+                <text>{{showWord.kanji}}</text>
+                <text class="word__tone">{{showWord.tone}}</text>
             </view>
-            <view class="word__explantion">{{word.explanation}}</view>
+            <view class="word__explantion">{{showWord.explanation}}</view>
             <view class="word__from">来自 {{book.name}}</view>
         </view>
         <view class="prev" wx:if="{{showPrev}}" @tap="handlePrev">
@@ -158,26 +158,23 @@
             wordId: '',
             multiple: false,
             playing: false,
+            loading: false,
+            word: {},
             unitList: [],
-            wordList: [],
             book: {},
-            readingBook: {},
-            wordIndex: -1
+            readingBook: {}
         }
 
         computed = {
-            word: function() {
-                if (this.wordIndex != -1) {
-                    let word = {
-                        ...this.wordList[this.wordIndex]
-                    }
-                    let mapping = [
-                        '⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'
-                    ]
-                    word.tone = word.tone == '' ? '' : mapping[+word.tone]
-                    return word
+            showWord: function() {
+                let word = {
+                    ...this.word
                 }
-                return {}
+                let mapping = [
+                    '⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'
+                ]
+                word.tone = word.tone == '' ? '' : mapping[+word.tone]
+                return word
             },
             unitId: function() {
                 return this.word.unitId
@@ -186,10 +183,10 @@
                 return this.multiple
             },
             showPrev: function() {
-                return this.wordIndex > 0
+                return this.multiple && this.word.index > 1
             },
             showNext: function() {
-                return this.wordIndex < this.wordList.length - 1
+                return this.multiple && this.word.index < this.book.wordCount
             },
             isTopping () {
                 return this.bookId == this.readingBook.id
@@ -207,16 +204,16 @@
 
         methods = {
         	handlePrev () {
-                if (this.wordIndex <= 0) {
+                if (this.word.index <= 1) {
                     return
                 }
-                this.wordIndex = this.wordIndex - 1
+                this.getPrevWord()
             },
             handleNext () {
-                if (this.wordIndex >= this.wordList.length - 1) {
+                if (this.word.index >= this.book.wordCount) {
                     return
                 }
-                this.wordIndex = this.wordIndex + 1
+                this.getNextWord()
             },
             handleProunce (word) {
                 if (this.playing) {
@@ -226,6 +223,63 @@
                 innerAudioContext.src = otherApi.getProunceUrl(word.kana)
                 innerAudioContext.play()
             }
+        }
+
+        async getNextWord () {
+            if (this.loading) {
+                return
+            }
+            this.loading = true
+            let wordDetailPromise = wordApi.getNextWord({
+                bookId: this.bookId,
+                wordId: this.word.id
+            })
+            let wordDetailResponse = await wordDetailPromise
+            if (!wordDetailResponse.success) {
+                Tips.error(wordDetailResponse.message)
+                wx.hideLoading()
+                return
+            }
+            this.word = wordDetailResponse.data
+            this.loading = false
+            this.$apply()
+        }
+
+        async getPrevWord () {
+            if (this.loading) {
+                return
+            }
+            this.loading = true
+            let wordDetailPromise = wordApi.getPrevWord({
+                bookId: this.bookId,
+                wordId: this.word.id
+            })
+            let wordDetailResponse = await wordDetailPromise
+            if (!wordDetailResponse.success) {
+                Tips.error(wordDetailResponse.message)
+                wx.hideLoading()
+                return
+            }
+            this.word = wordDetailResponse.data
+            this.loading = false
+            this.$apply()
+        }
+
+        async getWord () {
+            if (this.loading) {
+                return
+            }
+            this.loading = true
+            let wordDetailPromise = wordApi.get({ wordId: this.wordId })
+            let wordDetailResponse = await wordDetailPromise
+            if (!wordDetailResponse.success) {
+                Tips.error(wordDetailResponse.message)
+                wx.hideLoading()
+                return
+            }
+            this.word = wordDetailResponse.data
+            this.loading = false
+            this.$apply()
         }
 
         async loadData () {
@@ -242,16 +296,10 @@
                 Tips.error(bookResponse.message)
                 return
             }
-
             this.book = bookResponse.data
-            if (this.multiple) {
-                let unitListPromise = unitApi.get({
-                    bookId: this.bookId
-                })
-                let wordListPromise = wordApi.getAll({
-                    bookId: this.bookId
-                })
 
+            if (this.multiple) {
+                let unitListPromise = unitApi.get({ bookId: this.bookId })
                 let unitListResponse = await unitListPromise
                 if (!unitListResponse.success) {
                     Tips.error(unitListResponse.message)
@@ -259,27 +307,9 @@
                     return
                 }
                 this.unitList = unitListResponse.data
-
-                let wordListResponse = await wordListPromise
-                if (!wordListResponse.success) {
-                    Tips.error(wordListResponse.message)
-                    wx.hideLoading()
-                    return
-                }
-                this.wordList = wordListResponse.data
-                this.wordIndex = this.wordList.findIndex(word => word.id == this.wordId)
-            } else {
-                let wordDetailPromise = wordApi.get({wordId: this.wordId})
-                let wordDetailResponse = await wordDetailPromise
-                if (!wordDetailResponse.success) {
-                    Tips.error(wordDetailResponse.message)
-                    wx.hideLoading()
-                    return
-                }
-                this.wordList = [wordDetailResponse.data]
-                this.wordIndex = 0
             }
-            this.$apply()
+
+            await this.getWord()
             wx.hideLoading()
         }
 
