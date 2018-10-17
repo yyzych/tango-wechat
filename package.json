@@ -1,7 +1,7 @@
 {
   "name": "wepy-project",
   "version": "0.0.2",
-  "description": "SIMBOSS物联网",
+  "description": "",
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",
