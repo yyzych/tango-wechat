@@ -5,7 +5,6 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-  import WxUtils from './utils/WxUtils'
   import Tips from './utils/Tips'
   import Authorize from './utils/Authorize'
   import {

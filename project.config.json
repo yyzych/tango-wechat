@@ -8,7 +8,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"appid": "wx1828f97916e6bf07",
+	"appid": "",
 	"projectname": "tango",
 	"miniprogramRoot": "./dist",
 	"libVersion": "2.2.2",
